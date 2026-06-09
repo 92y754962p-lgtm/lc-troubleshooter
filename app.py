@@ -15,10 +15,10 @@ issue = st.text_area("Describe the Issue")
 
 if st.button("Troubleshoot"):
     try:
-        # Fetch the key from Streamlit's secure storage
+        # Securely fetch API key
         API_KEY = st.secrets["GEMINI_API_KEY"]
+        # Updated URL for stable model access
         URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
-"
         
         with st.spinner("Analyzing..."):
             prompt = f"Troubleshoot this LC issue: {issue}. System: {system}, Column P/N: {part_num}, MP A: {mpa}, MP B: {mpb}. Return 3-5 physical checklist items."
@@ -27,14 +27,16 @@ if st.button("Troubleshoot"):
             response = requests.post(URL, headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
             data = response.json()
             
-            # Check for valid data
+            # Check response structure
             if 'candidates' in data and len(data['candidates']) > 0:
-                st.write(data['candidates'][0]['content']['parts'][0]['text'])
+                result = data['candidates'][0]['content']['parts'][0]['text']
+                st.write(result)
             elif 'error' in data:
                 st.error(f"API Error: {data['error']['message']}")
             else:
-                st.error(f"Unexpected response: {data}")
+                st.error(f"Unexpected response format: {data}")
+                
     except KeyError:
-        st.error("API Key missing! Make sure 'GEMINI_API_KEY' is saved in your Streamlit Cloud 'Secrets' settings.")
+        st.error("API Key missing! Ensure 'GEMINI_API_KEY' is set in Streamlit Cloud Secrets.")
     except Exception as e:
         st.error(f"Error: {e}")
