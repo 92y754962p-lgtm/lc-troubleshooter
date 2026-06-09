@@ -17,8 +17,8 @@ if st.button("Troubleshoot"):
     try:
         # Securely fetch API key
         API_KEY = st.secrets["GEMINI_API_KEY"]
-        # Updated URL for stable model access
-        URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
+        # UPDATED: Using gemini-2.5-flash
+        URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
         
         with st.spinner("Analyzing..."):
             prompt = f"Troubleshoot this LC issue: {issue}. System: {system}, Column P/N: {part_num}, MP A: {mpa}, MP B: {mpb}. Return 3-5 physical checklist items."
